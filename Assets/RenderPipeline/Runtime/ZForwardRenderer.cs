@@ -17,6 +17,7 @@ public partial class ZForwardRenderer
     };
     ScriptableRenderContext context;
     Camera camera;
+    ZLighting lighting = new ZLighting();
     CullingResults cullingResults;
     #endregion
 
@@ -37,6 +38,7 @@ public partial class ZForwardRenderer
         }
 
         Setup();
+        lighting.Setup(context, cullingResults);
         DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
 #if UNITY_EDITOR
         DrawUnsupportedShaders();
