@@ -27,4 +27,5 @@
             ENDHLSL
         }
     }
+    CustomEditor "ZRPShaderGUI"
 }

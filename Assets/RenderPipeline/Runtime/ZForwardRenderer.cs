@@ -22,7 +22,8 @@ public partial class ZForwardRenderer
     #endregion
 
     public void Render(ScriptableRenderContext context, Camera camera,
-        bool useDynamicBatching, bool useGPUInstancing)
+        bool useDynamicBatching, bool useGPUInstancing,
+        ZShadowSettings shadowSettings)
     {
         this.context = context;
         this.camera = camera;
@@ -32,19 +33,25 @@ public partial class ZForwardRenderer
         PrepareForSceneWindow();
 #endif
 
-        if (!Cull())
+        if (!Cull(shadowSettings.maxDistance))
         {
             return;
         }
 
+        // Shadow
+        buffer.BeginSample(SampleName);
+        ExecuteBuffer();
+        lighting.Setup(context, cullingResults, shadowSettings);
+        buffer.EndSample(SampleName);
+
+        // Geometry
         Setup();
-        lighting.Setup(context, cullingResults);
         DrawVisibleGeometry(useDynamicBatching, useGPUInstancing);
 #if UNITY_EDITOR
         DrawUnsupportedShaders();
         DrawGizmos();
 #endif
-
+        lighting.Cleanup();
         Submit();
     }
 
@@ -92,10 +99,11 @@ public partial class ZForwardRenderer
         buffer.BeginSample(SampleName);
         ExecuteBuffer();
     }
-    bool Cull()
+    bool Cull(float maxShadowDistance)
     {
         if (camera.TryGetCullingParameters(out ScriptableCullingParameters p))
         {
+            p.shadowDistance = maxShadowDistance;
             cullingResults = context.Cull(ref p);
             return true;
         }

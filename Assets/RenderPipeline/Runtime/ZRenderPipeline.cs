@@ -7,11 +7,15 @@ public class ZRenderPipeline : RenderPipeline
 {
     ZForwardRenderer renderer = new ZForwardRenderer();
     bool useDynamicBatching, useGPUInstancing;
+    ZShadowSettings shadowSettings;
+
     public ZRenderPipeline(
-        bool useDynamicBatching, bool useGPUInstancing, bool useSRPBatcher
+        bool useDynamicBatching, bool useGPUInstancing, bool useSRPBatcher,
+        ZShadowSettings shadowSettings
     ) {
         this.useDynamicBatching = useDynamicBatching;
         this.useGPUInstancing = useGPUInstancing;
+        this.shadowSettings = shadowSettings;
         GraphicsSettings.useScriptableRenderPipelineBatching = useSRPBatcher;
         GraphicsSettings.lightsUseLinearIntensity = true;
     }
@@ -20,7 +24,7 @@ public class ZRenderPipeline : RenderPipeline
         foreach(Camera camera in cameras)
         {
             renderer.Render(
-                context, camera, useDynamicBatching, useGPUInstancing
+                context, camera, useDynamicBatching, useGPUInstancing, shadowSettings
             );
         }
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public class PerObjectMaterialProperties : MonoBehaviour
+public class ZPerObjectMaterialProperties : MonoBehaviour
 {
     static int baseColorId = Shader.PropertyToID("_BaseColor");
     static int cutoffId = Shader.PropertyToID("_Cutoff");
