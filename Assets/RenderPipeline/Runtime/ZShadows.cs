@@ -110,7 +110,6 @@ public class ZShadows
             out ShadowSplitData splitData
         );
         shadowSettings.splitData = splitData;
-        SetTileViewport(index, split, tileSize);
         dirShadowMatrices[index] = ConvertToAtlasMatrix(
             projectionMatrix * viewMatrix,
             SetTileViewport(index, split, tileSize), split
@@ -123,7 +122,8 @@ public class ZShadows
     public Vector2 ReserveDirectionalShadows(Light light, int visibleLightIndex)
     {
         if (ShadowedDirectionalLightCount < maxShadowedDirectionalLightCount &&
-            light.shadows != LightShadows.None && light.shadowStrength > 0f &&
+            light.shadows != LightShadows.None &&
+            light.shadowStrength > 0f &&
             cullingResults.GetShadowCasterBounds(visibleLightIndex, out Bounds b))
         {
             ShadowedDirectionalLights[ShadowedDirectionalLightCount] =

@@ -103,7 +103,7 @@ public partial class ZForwardRenderer
     {
         if (camera.TryGetCullingParameters(out ScriptableCullingParameters p))
         {
-            p.shadowDistance = maxShadowDistance;
+            p.shadowDistance = Mathf.Min(maxShadowDistance, camera.farClipPlane);
             cullingResults = context.Cull(ref p);
             return true;
         }
