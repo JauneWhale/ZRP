@@ -49,7 +49,7 @@ public class ZLighting
 		for (int i = 0; i < visibleLights.Length; i++)
 		{
 			VisibleLight visibleLight = visibleLights[i];
-			if (visibleLight.lightType == LightType.Directional)
+			if (visibleLight.lightType == LightType.Directional && visibleLight.light.lightmapBakeType != LightmapBakeType.Baked)
 			{
 				SetupDirectionalLight(dirLightCount++, ref visibleLight);
 				if (dirLightCount >= maxDirLightCount)

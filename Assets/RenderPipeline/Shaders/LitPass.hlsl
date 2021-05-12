@@ -58,12 +58,15 @@ float4 LitPassFragment(Varyings input) : SV_TARGET{
 	// Construct the surface structure
 	Surface surface;
 	surface.position = input.positionWS;
+	surface.depth = -TransformWorldToView(input.positionWS).z;
 	surface.normal = normalize(input.normalWS);
 	surface.color = base.rgb;
 	surface.alpha = base.a;
 	surface.metallic = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Metallic);
 	surface.viewDirection = normalize(_WorldSpaceCameraPos - input.positionWS);
 	surface.smoothness = UNITY_ACCESS_INSTANCED_PROP(UnityPerMaterial, _Smoothness);
+	// from the Core RP Library, which generates a rotated tiled dither pattern given a screen-space XY position
+	surface.dither = InterleavedGradientNoise(input.positionCS.xy, 0);
 
 	// Calculate color
 	#if defined(_PREMULTIPLY_ALPHA)

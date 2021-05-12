@@ -6,6 +6,10 @@ using UnityEngine.Rendering;
 
 public class ZRPShaderGUI : ShaderGUI
 {
+	enum ShadowMode
+	{
+		On, Clip, Dither, Off
+	}
 	MaterialEditor editor;
 	Object[] materials;
 	MaterialProperty[] properties;
@@ -15,6 +19,7 @@ public class ZRPShaderGUI : ShaderGUI
 		MaterialEditor materialEditor, MaterialProperty[] properties
 	)
 	{
+		EditorGUI.BeginChangeCheck();
 		base.OnGUI(materialEditor, properties);
 		editor = materialEditor;
 		materials = materialEditor.targets;
@@ -28,9 +33,26 @@ public class ZRPShaderGUI : ShaderGUI
 			FadePreset();
 			TransparentPreset();
 		}
+		if (EditorGUI.EndChangeCheck())
+		{
+			SetShadowCasterPass();
+		}
 	}
-    #region properties
-    RenderQueue RenderQueue
+	#region properties
+
+	ShadowMode Shadows
+	{
+		set
+		{
+			if (SetProperty("_Shadows", (float)value))
+			{
+				SetKeyword("_SHADOWS_CLIP", value == ShadowMode.Clip);
+				SetKeyword("_SHADOWS_DITHER", value == ShadowMode.Dither);
+			}
+		}
+	}
+
+	RenderQueue RenderQueue
 	{
 		set
 		{
@@ -102,6 +124,19 @@ public class ZRPShaderGUI : ShaderGUI
 			{
 				m.DisableKeyword(keyword);
 			}
+		}
+	}
+	void SetShadowCasterPass()
+	{
+		MaterialProperty shadows = FindProperty("_Shadows", properties, false);
+		if (shadows == null || shadows.hasMixedValue)
+		{
+			return;
+		}
+		bool enabled = shadows.floatValue < (float)ShadowMode.Off;
+		foreach (Material m in materials)
+		{
+			m.SetShaderPassEnabled("ShadowCaster", enabled);
 		}
 	}
 	#endregion
