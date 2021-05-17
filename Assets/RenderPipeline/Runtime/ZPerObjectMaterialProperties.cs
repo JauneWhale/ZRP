@@ -9,6 +9,7 @@ public class ZPerObjectMaterialProperties : MonoBehaviour
     static int cutoffId = Shader.PropertyToID("_Cutoff");
     static int metallicId = Shader.PropertyToID("_Metallic");
     static int smoothnessId = Shader.PropertyToID("_Smoothness");
+	static int emissionColorId = Shader.PropertyToID("_EmissionColor");
     static MaterialPropertyBlock block;
 
     [SerializeField]
@@ -19,6 +20,8 @@ public class ZPerObjectMaterialProperties : MonoBehaviour
     float metallic = 0f;
     [SerializeField, Range(0f, 1f)]
     float smoothness = 0.5f;
+    [SerializeField, ColorUsage(false, true)]
+    Color emissionColor = Color.black;
 
     void OnValidate()
     {
@@ -30,6 +33,7 @@ public class ZPerObjectMaterialProperties : MonoBehaviour
         block.SetFloat(cutoffId, alphaCutoff);
         block.SetFloat(metallicId, metallic);
         block.SetFloat(smoothnessId, smoothness);
+        block.SetColor(emissionColorId, emissionColor);
         GetComponent<Renderer>().SetPropertyBlock(block);
     }
 
